@@ -1,9 +1,9 @@
 cask "pacto" do
   arch arm: "aarch64", intel: "x64"
 
-  version "0.7.0"
-  sha256 arm:   "f4fa8c046cdbf2e26b25b003c7274b67b22e7d63d59da3858fbaa2862e3cf52b",
-         intel: "6c9580f51098eee05bbf217a9d4c04515ea4eee7686d69f2f4b80ba604a49916"
+  version "0.7.3"
+  sha256 arm:   "5fb16dfd5bbe9c843ce6ec657b064a53eabc6690c40a376cdbd2137177d06977",
+         intel: "fc36a09a4025ee2f02d00dd81019615691aba3a55fc774db6f7bf21fb2f67b5c"
 
   url "https://github.com/covenant-gov/pacto-app/releases/download/v#{version}/Pacto_#{version}_#{arch}.dmg"
   name "Pacto"

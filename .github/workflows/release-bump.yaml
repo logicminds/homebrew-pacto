@@ -45,9 +45,9 @@ jobs:
             exit 1
           fi
 
-      - name: Cask version matches a published release
+      - name: Cask version is a newer published release
         run: |
-          echo "cask version matches a published release" > "$RUNNER_TEMP/gate.txt"
+          echo "cask version is a newer published release" > "$RUNNER_TEMP/gate.txt"
           TAG="${HEAD_REF#chore/bump-}"
           VERSION="$(sed -n 's/^  version "\(.*\)"$/\1/p' "$CASK")"
           if [ -z "$VERSION" ]; then
@@ -64,6 +64,13 @@ jobs:
           )"
           if [ "$release_tag" != "$TAG" ] || [ "$is_draft" != "false" ] || [ "$is_prerelease" != "false" ]; then
             echo "$UPSTREAM $TAG is not a published, non-draft, non-prerelease release (tag=$release_tag draft=$is_draft prerelease=$is_prerelease)."
+            exit 1
+          fi
+          git fetch --depth=1 origin "$GITHUB_BASE_REF"
+          base_version="$(git show "FETCH_HEAD:$CASK" | sed -n 's/^  version "\(.*\)"$/\1/p')"
+          if [ "$VERSION" = "$base_version" ] ||
+             [ "$(printf '%s\n%s\n' "$VERSION" "$base_version" | sort -V | head -n 1)" != "$base_version" ]; then
+            echo "Cask version $VERSION is not newer than $GITHUB_BASE_REF's $base_version; refusing to downgrade the tap."
             exit 1
           fi
           echo "TAG=$TAG" >> "$GITHUB_ENV"
